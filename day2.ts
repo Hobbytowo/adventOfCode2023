@@ -46,5 +46,3 @@ readModuleFile('./day2.txt', function (err, data) {
 
     console.log({result})
 });
-
-// 4811 too high

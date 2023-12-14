@@ -27,12 +27,7 @@ readModuleFile('./day1.txt', function (err, data) {
             .replace("nine", "9")
 
         const regexpr = /(?=(\d|one|two|three|four|five|six|seven|eight|nine))/g
-        //const digits = line.match(regexpr).map(d => parseDigit(d))
         const digits = Array.from(line.matchAll(regexpr), x => parseDigit(x[1]))
-
-        // /\d{3}/g
-        //var re = /(?=(\d{3}))/g;
-        //console.log( Array.from('12345'.matchAll(re), x => x[1]) );
 
         const firstDigit = digits[0]
         const lastDigit = digits[digits.length - 1]
