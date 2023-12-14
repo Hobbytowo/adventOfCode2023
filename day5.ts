@@ -43,7 +43,10 @@ readModuleFile('./day5.txt', function (err, data) {
         })
     }
 
-    const soil = mapFn(seeds, seedToSoilMap)
+    const groupedSeeds = groupBy(seeds, 2)
+    const seedsV2 = groupedSeeds.map(s => Array.from({length: s[1]}, ((_, idx)=> Number(s[0]) + idx))).flat()
+
+    const soil = mapFn(seedsV2, seedToSoilMap)
     const fertilizer = mapFn(soil, soilToFertilizerMap)
     const water = mapFn(fertilizer, fertilizerToWaterMap)
     const light = mapFn(water, waterToLightMap)
