@@ -1,8 +1,6 @@
 const fs = require('fs');
 const thenby = require('thenby');
 
-// 253719249 too high
-
 function readModuleFile(path, callback) {
     try {
         const filename = require.resolve(path);
@@ -23,16 +21,29 @@ readModuleFile('./day7.txt', function (err, data) {
         .map(x => {
             const [cards, bid] = x.split(" ")
 
-            const cardValues = cards.split('').map(card => sortOrder.findIndex(x => x === card))
-            const highestCard = sortOrder[Math.min(...cardValues)]
+            const originalOfKind = new Set(cards)
+            const originalSets = Array
+                .from(originalOfKind)
+                .map(letter => ({
+                    letter,
+                    letterValue: sortOrder.findIndex(x => x === letter),
+                    amount: cards.match(new RegExp(`${letter}`, 'g')).length,
+                }))
+                .sort(thenby
+                    .firstBy(function (v1, v2) { return v2.amount - v1.amount; })
+                    .thenBy(function (v) { return v.letterValue })
+                )
+
+            const highestCard = (originalSets[0].letter === "J" && originalSets.length !== 1)
+                ? originalSets[1].letter
+                : originalSets[0].letter
+
             let pretendCards = cards.replaceAll("J", highestCard)
 
             const ofKind = new Set(pretendCards)
 
             const sets = Array.from(ofKind).map(letter => pretendCards.match(new RegExp(`${letter}`, 'g')).length)
             const maxSetNumber = Math.max(...sets)
-
-            console.log(cards, pretendCards, sets)
 
             return {cards, bid, sets, maxSetNumber,}
         })
