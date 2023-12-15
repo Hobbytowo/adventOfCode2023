@@ -18,25 +18,27 @@ readModuleFile('./day8.txt', function (err, data) {
 
     const parsedData = arr
         .filter(l => l.includes("="))
-        .map(x => {
+        .reduce((obj, x) => {
             const [start, goLeft, goRight] = x.match(/[0-9A-Z]+/g)
-            return {start, goLeft, goRight,}
-        })
-
+            return {
+                ...obj,
+                [`${start}`]: [goLeft, goRight]
+            }
+        }, {})
 
     let step = 0
-    let places = parsedData.filter(x => x.start[2] === "A").map(p => p.start)
+    let places = Object.keys(parsedData).filter(x => x[2] === "A")
     console.log(parsedData, places)
 
-    while (places.some(p => p[2] !== "Z")) {
+    while (places.some(p => !p.endsWith("Z"))) {
         const direction = directions[step % directions.length]
         step++
 
         places = places.map(p => {
-            const item = parsedData.find(d => d.start === p)
-            return direction === "L" ? item.goLeft : item.goRight
+            const item = parsedData[p]
+            return item[direction === "L" ? 0 : 1]
         })
     }
 
-    console.log({directions, parsedData, step, places})
+    console.log({step, places})
 });
